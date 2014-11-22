@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_order_line_template_mng,sale.order.line.template,model_sale_order_line_template,base.group_tool_manager,1,1,1,1
+access_sale_order_template_mng,sale.order.template,model_sale_order_template,base.group_tool_manager,1,1,1,1
+
+access_sale_order_line_template_usr,sale.order.line.template,model_sale_order_line_template,base.group_tool_user,1,1,1,1
+access_sale_order_template_usr,sale.order.template,model_sale_order_template,base.group_tool_user,1,1,1,1
+access_subscription_document_fields_usr,subscription.document.fields,subscription.model_subscription_document_fields,base.group_tool_user,1,1,1,1
