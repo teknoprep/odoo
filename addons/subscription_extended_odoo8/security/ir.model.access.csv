@@ -1,0 +1,13 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_sale_order_line_template_all","access_sale_order_line_template_all","model_sale_order_line_template",,"1","1","1","1"
+"access_sale_order_template_mng_all","access_sale_order_template_mng_all","model_sale_order_template",,"1","1","1","1"
+,,,,,,,
+"access_subscription_document_fields","access_subscription_document_fields","subscription.model_subscription_document_fields",,"1","1","1","1"
+,,,,,,,
+,,,,,,,
+"access_subscription_document_fields","subscription.document.fields","subscription.model_subscription_document_fields","account.group_account_manager","1","1","1","1"
+"access_subscription_subscription_user","subscription.subscription user","subscription.model_subscription_subscription","account.group_account_invoice","1","1","1","1"
+"access_subscription_subscription_history_user","subscription.subscription.history user","subscription.model_subscription_subscription_history","account.group_account_invoice","1","1","1","1"
+"access_subscription_document_user","subscription.document user","subscription.model_subscription_document","account.group_account_invoice","1","1","1","1"
+"access_res_partner_user","res.partner.user","base.model_res_partner","account.group_account_invoice","1","1","1","1"
+"access_ir_cron_user","ir.cron.user","base.model_ir_cron","account.group_account_invoice","1","1","1","1"

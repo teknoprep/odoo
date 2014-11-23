@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+
+    <record id="view_subscription_form_inherit" model="ir.ui.view">
+      <field name="name">subscription.subscription.form.inherit</field>
+      <field name="model">subscription.subscription</field>
+      <field name="inherit_id" ref="subscription.view_subscription_form" />
+      <field name="arch" type="xml">
+        <field name="partner_id" position="replace" />
+        <field name="cron_id" position="after">
+          <field name="partner_id" required="1" />
+          <field name="notify_by_mail" />
+          <field name="payment_term" />
+          <field name="valid_invoice" />
+        </field>
+        <field name="doc_source" position="replace">
+          <field name="doc_source" widget="reference" invisible="1"/>
+          <newline/>
+          <label for="source_doc_id" />
+          <div>
+            <field name="source_doc_id" on_change="onchange_source_doc(source_doc_id)" />
+            <field name="temp_model" invisible="1" />
+            <field name="template_order_id" attrs="{'invisible': [('temp_model', '!=', 'sale.order.template')], 'required': [('temp_model', '=', 'sale.order.template')]}" domain="[('subcription_doc_id','=',source_doc_id),('recurring_record','=',True)]" on_change="onchange_template_first(template_order_id, source_doc_id)" context="{'default_recurring_record': True}" />
+          </div>
+        </field>
+        <separator string="Internal Notes" position="replace" />
+        <field name="notes" position="replace" />
+        <page string="Subsription Data" position="inside">
+          <notebook>
+            <page string="Template Details" attrs="{'invisible': [('temp_model', '!=', 'sale.order.template')]}">
+              <div>
+                <b>To change any parameters in Template, please click below on Template and save changes, it'll applicable to this subscription only,</b><br/><br/>
+                <b>the changes from 'Recurring Templates' menu won't affect here, it'll only applicable for new subscriptions</b>
+              </div>
+              <field name="template_ids1" />
+            </page>
+          </notebook>
+        </page>
+      </field>
+    </record>
+
+    <menuitem id="menu_subscription" name="Subscription" parent="account.menu_finance" sequence="4" groups="account.group_account_manager"/>
+
+    <menuitem action="subscription.action_subscription_form" id="menu_action_subscription_form" parent="menu_subscription" sequence="5"/>
+
+    <menuitem id="menu_action_document_form" action="subscription.action_document_form" parent="menu_subscription"/>
+
+  </data>
+</openerp>
