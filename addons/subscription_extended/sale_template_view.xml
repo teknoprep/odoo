@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data noupdate="1">
+
+	  <record id="seq_type_sale_order_template" model="ir.sequence.type">
+	    <field name="name">Sale Order Template</field>
+	    <field name="code">sale.order.template</field>
+	  </record>
+
+    <record id="seq_sale_order_template" model="ir.sequence">
+	    <field name="name">Sale Order Template</field>
+	    <field name="code">sale.order.template</field>
+	    <field name="prefix">SOT</field>
+	    <field name="padding">3</field>
+	    <field name="company_id" eval="False"/>
+    </record>
+
+  </data>
+  <data>
+
+    <record id="view_template_sale_order_form" model="ir.ui.view">
+      <field name="name">sale.order.template.form</field>
+      <field name="model">sale.order.template</field>
+      <field name="arch" type="xml">
+        <form string="Template Details" version="7.0">
+          <sheet>
+            <group>
+              <group>
+                <field name="name" class="oe_inline" readonly="1" />
+                <field name="subcription_doc_id" domain="[('active','=',True)]" on_change="onchange_sub_doc(subcription_doc_id)" />
+                <field name="partner_id" invisible="1" />
+              </group>
+              <group>
+                <field name="date_order" />
+                <field domain="[('type','=','sale')]" name="pricelist_id" on_change="onchange_pricelist_id(pricelist_id,sale_order_line)" attrs="{'invisible': [('model_name', '!=', 'sale.order')], 'required': [('model_name', '==', 'sale.order')]}"/>
+                <field name="recurring_record" invisible="1" />
+                <!-- <field name="model_id"/> -->
+                <field name="model_name" invisible="1" />
+                <field name="invoice_type" attrs="{'invisible': [('model_name', '!=', 'account.invoice')], 'required': [('model_name', '==', 'account.invoice')]}" />
+                <field name="company_id" attrs="{'invisible': [('model_name', '!=', 'account.invoice')], 'required': [('model_name', '==', 'account.invoice')]}" />
+              </group>
+            </group>
+            <notebook>
+              <page string="Order Lines">
+                <field name="sale_order_line">
+                  <tree string="Template Lines" editable="bottom">
+                    <field name="product_id" groups="base.group_user" on_change="product_id_change(product_id, parent.invoice_type)" />
+                    <field name="name" />
+                    <field name="product_uom_qty" on_change="product_id_change(product_id, parent.invoice_type)" />
+                    <field name="product_uom" />
+                    <field name="price_unit" />
+                    <field name="tax_id" widget="many2many_tags" />
+                    <field name="discount" groups="sale.group_discount_per_so_line" />
+                    <field name="price_subtotal" />
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_template_sale_order_tree" model="ir.ui.view">
+      <field name="name">sale.order.template.tree</field>
+      <field name="model">sale.order.template</field>
+      <field name="arch" type="xml">
+        <tree string="Template Details">
+          <field name="name" />
+          <field name="subcription_doc_id" />
+        </tree>
+      </field>
+    </record>
+
+    <record id="action_sale_order_template_form" model="ir.actions.act_window">
+      <field name="name">Recurring Templates</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">sale.order.template</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'default_recurring_record': True}</field>
+      <field name="domain">[('recurring_record','=',True)]</field>
+    </record>
+
+    <menuitem 
+                action="action_sale_order_template_form" 
+                id="menu_action_sale_order_form" 
+                parent="base.menu_automation" />
+  
+    <menuitem 
+                action="action_sale_order_template_form" 
+                id="menu_subscription_templates_form" 
+                parent="menu_subscription"
+                sequence="15"/>
+  
+  </data>
+</openerp>
