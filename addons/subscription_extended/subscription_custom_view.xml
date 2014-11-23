@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        
+        	<record id="view_subscription_form_inherit" model="ir.ui.view">
+	            <field name="name">subscription.subscription.form.inherit</field>
+	            <field name="model">subscription.subscription</field>
+	            <field name="inherit_id" ref="subscription.view_subscription_form"/>
+	            <field name="arch" type="xml">
+	                <field name="partner_id" position="replace"/>
+	                <field name="cron_id" position="after">
+                        <field name="partner_id" required="1"/>
+                        <field name="notify_by_mail"/>
+                        <field name="payment_term"/>
+                        <field name="valid_invoice"/>
+                    </field>
+	                <field name="doc_source" position="replace">
+	                    <label for="source_doc_id"/>
+	                    <div>
+							<field name="source_doc_id" on_change="onchange_source_doc(source_doc_id)"/>	
+							<field name="temp_model" invisible="1"/>                        
+	                       	<field name="template_order_id" attrs="{'invisible': [('temp_model', '!=', 'sale.order.template')], 'required': [('temp_model', '=', 'sale.order.template')]}" domain="[('subcription_doc_id','=',source_doc_id),('recurring_record','=',True)]"
+	                       	    			on_change="onchange_template_first(template_order_id, source_doc_id)" context="{'default_recurring_record': True}"/>
+	                    </div>
+	                </field>
+	                
+	                <separator string="Notes" position="replace"/>
+                    <field name="notes" position="replace"/>
+	                <page string="Subsription Data" position="inside">
+	                <!-- <field name="notes" position="before"> -->
+	                    <notebook>
+	                        <page string="Template Details" attrs="{'invisible': [('temp_model', '!=', 'sale.order.template')]}">
+	                            <field name="template_ids1"/>
+	                        </page>
+	                    </notebook>
+	                </page>
+	                <!-- </field> -->
+	            </field>
+	        </record>
+	        
+        	
+        	<record id="view_template_sale_order_form" model="ir.ui.view">
+	            <field name="name">sale.order.template.form</field>
+	            <field name="model">sale.order.template</field>
+	            <field name="arch" type="xml">
+	                <form string="Template Details" version="7.0">
+	                    <sheet>
+	                        <group>
+	                            <group>
+	                                <field name="name" class="oe_inline" readonly="1"/>
+	                            	<field name="subcription_doc_id" domain="[('active','=',True)]" on_change="onchange_sub_doc(subcription_doc_id)"/>
+	                            	<field name="partner_id" invisible="1"/>
+	                            </group>
+	                            <group>
+		                            <field name="date_order"/>
+		                            <field name="shop_id" groups="base.group_no_one" on_change="onchange_shop_id(shop_id, context)" widget="selection"/>
+		                            <field domain="[('type','=','sale')]" name="pricelist_id" groups="product.group_sale_pricelist" on_change="onchange_pricelist_id(pricelist_id,sale_order_line)"/>
+		                            <field name="recurring_record" invisible="1"/>
+		                            <!-- <field name="model_id"/> -->
+		                            <field name="model_name" invisible="1"/>
+		                            <field name="invoice_type" attrs="{'invisible': [('model_name', '!=', 'account.invoice')], 'required': [('model_name', '==', 'account.invoice')]}"/>
+		                        </group>
+	                        </group>
+	                        
+	                        <notebook>
+	                            <page string="Order Lines">
+	                                <field name="sale_order_line">
+	                                	<tree string="Template Lines" editable="bottom">
+		                                    <field name="product_id"
+		                                        groups="base.group_user" 
+		                                        on_change="product_id_change(product_id, parent.invoice_type)"/>
+		                                    <field name="name"/>
+		                                    <field name="product_uom_qty"
+		                                        on_change="product_id_change(product_id, parent.invoice_type)"/>
+		                                    <field name="product_uom"/>
+		                                    <field name="price_unit"/>
+		                                    <field name="tax_id" widget="many2many_tags"/>
+		                                    <field name="discount" groups="sale.group_discount_per_so_line"/>
+		                                    <field name="price_subtotal"/>
+		                                </tree>
+	                                </field>
+	                                <!-- <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+		                                <field name="amount_untaxed" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+		                                <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+		                                <div class="oe_subtotal_footer_separator oe_inline">
+		                                    <label for="amount_total" />
+		                                    <button name="button_dummy"
+		                                        string="(update)" type="object" class="oe_edit_only oe_link"/>
+		                                </div>
+		                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+		                            </group> -->
+	                            </page>
+	                        </notebook>
+	                    </sheet>
+	                </form>
+	            </field>
+	        </record>
+	        
+        	<record id="view_template_sale_order_tree" model="ir.ui.view">
+	            <field name="name">sale.order.template.tree</field>
+	            <field name="model">sale.order.template</field>
+	            <field name="arch" type="xml">
+	                <tree string="Template Details">
+	                    <field name="name"/>
+	                    <field name="subcription_doc_id"/>
+	                </tree>
+	             </field>
+	        </record>
+        	
+        	<record id="action_sale_order_template_form" model="ir.actions.act_window">
+	            <field name="name">Template</field>
+	            <field name="type">ir.actions.act_window</field>
+	            <field name="res_model">sale.order.template</field>
+	            <field name="view_type">form</field>
+	            <field name="view_mode">tree,form</field>
+	            <field name="context">{'default_recurring_record': True}</field>
+	            <field name="domain">[('recurring_record','=',True)]</field>
+	        </record>
+        
+                   
+       		<menuitem id="config_recuuring_template" name="Recurring Template" parent="base.menu_lunch_survey_root" sequence="5"/>
+       		<menuitem action="action_sale_order_template_form" id="menu_action_sale_order_form" parent="config_recuuring_template"/>
+       		
+       		
+       		
+       		
+
+    </data>
+</openerp>
